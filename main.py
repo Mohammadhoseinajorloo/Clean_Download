@@ -1,13 +1,10 @@
 from config import *
+import logging
 import shutil
 import os
 
 
-info_logger = Loggers(logging.INFO, ('%(asctime)s, %(name)s, %(message)s'), "logs/info.log")
-
-warning_logger = Loggers(logging.WARNING, ('%(asctime)s, %(name)s, %(message)s'), "logs/warning.log")
-
-debug_logger = Loggers(logging.DEBUG, ('%(asctime)s, %(name)s, %(message)s'), "logs/debug.log")
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filename="logs/log.txt")
 
 def check_extenstion(directory):
     extenstion = {}
@@ -20,19 +17,17 @@ def check_extenstion(directory):
             else:
                 extenstion[ext]=[os.path.join(root, file)]
     return extenstion
-
-
-def moved(extension, format_type, movies_file):
-    for format_type in extension[str(format_type)]:
-        sutill.move(format_type, movies_file)
-        return info_logger.info(f"{format_type} Moved in {movies_file}")
+ 
+def moved(formats, movies_file):
+        shutil.move(formats, movies_file)
+        return logging.info(f"{formats.split('/')[-1]} Moved in {movies_file} ")
 
 
 
 if __name__=="__main__":
 
     if not os.listdir(download_path):
-        warning_logger.warning(f"Directory {download_path} is empty")
+        logging.warning(f"Directory {download_path} is empty")
 
     else:
         try:
@@ -42,27 +37,32 @@ if __name__=="__main__":
             pdf_count = 0
 
             extension = check_extenstion(download_path)
-            if extension["mp4"] in extension:
-                moved(extension, mp4 ,movies_path)
-                mp4_count += 1
-            else:
-                warning_logger.warning("mp4 file not exists")
 
-            if extension["mkv"] in extension:
-                moved(extension, mkv,movies_path)
-                mkv_count += 1
+            if "mp4" in extension:
+                for mp4 in extension["mp4"]:
+                    moved(mp4 ,movies_path)
+                    mp4_count += 1
             else:
-                warning_logger.warning("mkv file not exists")
+                 logging.warning("mp4 file not exists")
 
-            if extension["pdf"] in extension:
-                moved(extension, pdf, pdf_path)
-                pdf_count += 1
+            if "mkv" in extension:
+                 for mkv in extension["mkv"]:
+                     moved(mkv,movies_path)
+                     mkv_count += 1
+                     print(mkv_count)
             else:
-                warning_logger.warning("pdf file not exists")
+                 logging.warning("mkv file not exists")
+
+            if "pdf" in extension:
+                 for pdf in extension["pdf"]:
+                     moved(pdf, pdf_path)
+                     pdf_count += 1
+            else:
+                 logging.warning("pdf file not exists")
 
         except:
-            debug_logger.debug("Please check download file")
+            logging.debug("Please check download file")
 
-
-
-
+        finally:
+            total = mp4_count+mkv_count+pdf_count
+            logging.info(f'total moved file : {total} - mp4 : {mp4_count} - mkv : {mkv_count} - pdf : {pdf_count}')
