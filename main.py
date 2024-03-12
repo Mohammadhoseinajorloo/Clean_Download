@@ -35,6 +35,7 @@ if __name__=="__main__":
             mp4_count = 0
             mkv_count = 0
             pdf_count = 0
+            mp3_count = 0
 
             extension = check_extenstion(download_path)
 
@@ -49,7 +50,6 @@ if __name__=="__main__":
                  for mkv in extension["mkv"]:
                      moved(mkv,movies_path)
                      mkv_count += 1
-                     print(mkv_count)
             else:
                  logging.warning("mkv file not exists")
 
@@ -60,9 +60,16 @@ if __name__=="__main__":
             else:
                  logging.warning("pdf file not exists")
 
+            if "mp3" in extension:
+                 for mp3 in extension["mp3"]:
+                     moved(mp3,audio_path)
+                     mp3_count += 1
+            else:
+                 logging.warning("mp3 file not exists")
+
         except:
             logging.debug("Please check download file")
 
         finally:
-            total = mp4_count+mkv_count+pdf_count
-            logging.info(f'total moved file : {total} - mp4 : {mp4_count} - mkv : {mkv_count} - pdf : {pdf_count}')
+            total = mp4_count+mkv_count+pdf_count+mp3_count
+            logging.info(f'total moved file : {total} | mp4 : {mp4_count} - mkv : {mkv_count} - pdf : {pdf_count} - mp3 : {mp3_count}')
