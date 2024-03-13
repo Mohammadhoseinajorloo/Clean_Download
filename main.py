@@ -2,9 +2,11 @@ from config import *
 import logging
 import shutil
 import os
+import re
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filename="logs/log.txt")
+
 
 def check_extenstion(directory):
     extenstion = {}
@@ -41,15 +43,38 @@ if __name__=="__main__":
 
             if "mp4" in extension:
                 for mp4 in extension["mp4"]:
-                    moved(mp4 ,movies_path)
-                    mp4_count += 1
+                    mp4name = mp4.split("/")[-1]
+                    if re.search("S0.E0.", mp4name):
+                        index = re.search("S0.E0.", mp4name)
+                        mk_pattern = mp4name[0:index.start()-1]
+                        if os.path.exists(os.path.join(serial_path, mk_pattern)):
+                            moved(mp4, os.path.join(serial_path, mk_pattern))
+                        else:
+                            os.mkdir(os.path.join(serial_path, mk_pattern))
+                            moved(mp4, os.path.join(serial_path, mk_pattern))
+                            mp4_count += 1
+                    else:
+                        moved(mp4 ,movies_path)
+                        mp4_count += 1
             else:
                  logging.warning("mp4 file not exists")
 
             if "mkv" in extension:
                  for mkv in extension["mkv"]:
-                     moved(mkv,movies_path)
-                     mkv_count += 1
+                    mkvname = mkv.split("/")[-1]
+                    if re.search("S0.E0.", mkvname):
+                        index = re.search("S0.E0.", mkvname)
+                        mk_pattern = mkvname[0:index.start()-1]
+                        if os.path.exists(os.path.join(serial_path, mk_pattern)):
+                            moved(mkv, os.path.join(serial_path, mk_pattern))
+
+                        else:
+                            os.mkdir(os.path.join(serial_path, mk_pattern))
+                            moved(mkv, os.path.join(serial_path, mk_pattern))
+                            mkv_count += 1
+                    else:
+                        moved(mkv ,movies_path)
+                        mkv_count += 1
             else:
                  logging.warning("mkv file not exists")
 
@@ -62,7 +87,7 @@ if __name__=="__main__":
 
             if "mp3" in extension:
                  for mp3 in extension["mp3"]:
-                     moved(mp3,audio_path)
+                     moved(mp3, audio_path)
                      mp3_count += 1
             else:
                  logging.warning("mp3 file not exists")
