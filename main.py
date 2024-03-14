@@ -38,6 +38,8 @@ if __name__=="__main__":
             mkv_count = 0
             pdf_count = 0
             mp3_count = 0
+            deb_count = 0
+            exe_count = 0
 
             extension = check_extenstion(download_path)
 
@@ -49,6 +51,7 @@ if __name__=="__main__":
                         mk_pattern = mp4name[0:index.start()-1]
                         if os.path.exists(os.path.join(serial_path, mk_pattern)):
                             moved(mp4, os.path.join(serial_path, mk_pattern))
+                            mp4_count += 1
                         else:
                             os.mkdir(os.path.join(serial_path, mk_pattern))
                             moved(mp4, os.path.join(serial_path, mk_pattern))
@@ -67,6 +70,7 @@ if __name__=="__main__":
                         mk_pattern = mkvname[0:index.start()-1]
                         if os.path.exists(os.path.join(serial_path, mk_pattern)):
                             moved(mkv, os.path.join(serial_path, mk_pattern))
+                            mkv_count += 1
 
                         else:
                             os.mkdir(os.path.join(serial_path, mk_pattern))
@@ -92,9 +96,33 @@ if __name__=="__main__":
             else:
                  logging.warning("mp3 file not exists")
 
+            if "deb" in extension:
+                 for deb in extension["deb"]:
+                     if os.path.exists(os.path.join(app_path, "linux")):
+                         moved(deb, os.path.join(app_path, "linux"))
+                         deb_count += 1
+                     else:
+                        os.mkdir(os.path.join(app_path, "linux"))
+                        moved(deb, os.path.join(app_path, "linux"))
+                        deb_count += 1
+            else:
+                 logging.warning("deb file not exists")
+
+            if "exe" in extension:
+                 for exe in extension["exe"]:
+                     if os.path.exists(os.path.join(app_path, "windows")):
+                         moved(exe, os.path.join(app_path, "windows"))
+                         exe_count += 1
+                     else:
+                        os.mkdir(os.path.join(app_path, "windows"))
+                        moved(exe, os.path.join(app_path, "windows"))
+                        exe_count += 1
+            else:
+                 logging.warning("exe file not exists")
+
         except:
             logging.debug("Please check download file")
 
         finally:
-            total = mp4_count+mkv_count+pdf_count+mp3_count
-            logging.info(f'total moved file : {total} | mp4 : {mp4_count} - mkv : {mkv_count} - pdf : {pdf_count} - mp3 : {mp3_count}')
+            total = mp4_count+mkv_count+pdf_count+mp3_count+deb_count+exe_count
+            logging.info(f'total moved file : {total} | mp4 : {mp4_count} - mkv : {mkv_count} - pdf : {pdf_count} - mp3 : {mp3_count} - deb : {deb_count} - exe : {exe_count}')
