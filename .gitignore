@@ -2,3 +2,4 @@ __pycache__/
 config.py
 logs/
 cdw.sh
+.env/

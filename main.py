@@ -40,6 +40,8 @@ if __name__=="__main__":
             mp3_count = 0
             deb_count = 0
             exe_count = 0
+            jpg_count = 0
+            png_count = 0
 
             extension = check_extenstion(download_path)
 
@@ -120,9 +122,23 @@ if __name__=="__main__":
             else:
                  logging.warning("exe file not exists")
 
+            if "jpg" in extension:
+                 for jpg in extension["jpg"]:
+                     moved(jpg, picture_path)
+                     jpg_count += 1
+            else:
+                 logging.warning("jpg file not exists")
+
+            if "png" in extension:
+                 for png in extension["png"]:
+                     moved(png, picture_path)
+                     png_count += 1
+            else:
+                 logging.warning("png file not exists")
+
         except:
             logging.debug("Please check download file")
 
         finally:
-            total = mp4_count+mkv_count+pdf_count+mp3_count+deb_count+exe_count
-            logging.info(f'total moved file : {total} | mp4 : {mp4_count} - mkv : {mkv_count} - pdf : {pdf_count} - mp3 : {mp3_count} - deb : {deb_count} - exe : {exe_count}')
+            total = mp4_count+mkv_count+pdf_count+mp3_count+deb_count+exe_count+png_count+jpg_count
+            logging.info(f'total moved file : {total} | mp4 : {mp4_count} - mkv : {mkv_count} - pdf : {pdf_count} - mp3 : {mp3_count} - deb : {deb_count} - exe : {exe_count} - png : {png_count} - jpg : {jpg_count}')
